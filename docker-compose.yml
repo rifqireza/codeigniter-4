@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    image: ezza1921/codeigniter4-app:latest
+    container_name: codeigniter4-web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - codeigniter-net
+
+  db:
+    image: mysql:5.7
+    container_name: codeigniter4-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: codeigniter4db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - codeigniter-net
+
+networks:
+  codeigniter-net:
+    driver: bridge
+
+volumes:
+  db-data:
