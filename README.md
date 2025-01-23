@@ -1,68 +1,145 @@
-# CodeIgniter 4 Application Starter
+# CodeIgniter 4 Dockerized Project
 
-## What is CodeIgniter?
+Welcome to the CodeIgniter 4 Dockerized Project! This repository contains the necessary files to set up and run a CodeIgniter 4 project using Docker. By following the instructions below, you'll have your environment up and running with minimal effort.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+---
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## Table of Contents
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Configure Environment Variables](#2-configure-environment-variables)
+  - [3. Build and Run Containers](#3-build-and-run-containers)
+  - [4. Access the Application](#4-access-the-application)
+  - [5. Database Management](#5-database-management)
+- [Development Workflow](#development-workflow)
+- [Troubleshooting](#troubleshooting)
+- [Future Enhancements](#future-enhancements)
+- [License](#license)
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+---
 
-## Installation & updates
+## Features
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- Fully containerized environment with Docker.
+- CodeIgniter 4 application with PHP 8.2.
+- MySQL database and phpMyAdmin for database management.
+- Simple setup with Docker Compose.
+- Auto-rebuild for changes during development.
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+---
 
-## Setup
+## Prerequisites
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Ensure you have the following installed on your system:
 
-## Important Change with index.php
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) (latest version)
+- [Git](https://git-scm.com/)
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+---
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+## Getting Started
 
-**Please** read the user guide for a better explanation of how CI4 works!
+### 1. Clone the Repository
 
-## Repository Management
+Clone this repository to your local machine:
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+```bash
+git clone https://github.com/rifqireza/codeigniter-4.git
+cd codeigniter-4
+```
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+### 2. Configure Environment Variables
 
-## Server Requirements
+Copy the `.env.example` file to `.env`:
 
-PHP version 7.4 or higher is required, with the following extensions installed:
+```bash
+cp .env.example .env
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+Update the following variables in the `.env` file:
 
-> [!WARNING]
-> The end of life date for PHP 7.4 was November 28, 2022.
-> The end of life date for PHP 8.0 was November 26, 2023.
-> If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> The end of life date for PHP 8.1 will be November 25, 2024.
+- **`DB_HOST=db`**
+- **`DB_DATABASE=codeigniter4db`**
+- **`DB_USERNAME=user`**
+- **`DB_PASSWORD=userpassword`**
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+### 3. Build and Run Containers
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Run the following commands to build and start the containers:
+
+```bash
+docker-compose up -d --build
+```
+
+This will start the following services:
+
+- **Web Server:** Accessible on `http://localhost:8080`
+- **phpMyAdmin:** Accessible on `http://localhost:8081`
+
+### 4. Access the Application
+
+Once the containers are up, open your browser and navigate to:
+
+- **Application:** [http://localhost:8080](http://localhost:8080)
+- **phpMyAdmin:** [http://localhost:8081](http://localhost:8081)
+
+### 5. Database Management
+
+Login to phpMyAdmin using the following credentials:
+
+- **Server:** `db`
+- **Username:** `user`
+- **Password:** `userpassword`
+
+---
+
+## Development Workflow
+
+1. **Edit Your Code**
+   All project files are located in the `codeigniter_4` directory. Changes will automatically reflect in the running container.
+
+2. **Run Migrations**
+   To run migrations with CodeIgniter, execute:
+
+   ```bash
+   docker exec -it codeigniter4-web php spark migrate
+   ```
+
+3. **Rebuild the Container**
+   If dependencies are updated (e.g., `composer.json`), rebuild the container:
+
+   ```bash
+   docker-compose up -d --build
+   ```
+
+---
+
+## Troubleshooting
+
+### 1. Container Fails to Start
+
+- Check logs for errors:
+
+  ```bash
+  docker logs codeigniter4-web
+  ```
+
+- Ensure ports `8080` and `8081` are not in use.
+
+### 2. Database Connection Issues
+
+- Verify credentials in `.env` and `docker-compose.yml`.
+- Check if the `db` container is running:
+
+  ```bash
+  docker ps
+  ```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
